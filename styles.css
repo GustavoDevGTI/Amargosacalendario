@@ -2161,6 +2161,13 @@
             border-radius: 20px;
         }
 
+        body.embed-mode .calendar-card {
+            border-color: rgba(21, 124, 98, 0.12);
+            box-shadow:
+                0 26px 52px rgba(21, 124, 98, 0.14),
+                0 10px 24px rgba(212, 175, 55, 0.08);
+        }
+
         body.embed-mode .sidebar-block {
             padding: 16px;
         }
