@@ -15,6 +15,10 @@
             <header class="section-head">
                 <div class="section-copy">
                     <h1 id="calendar-title">Agenda</h1>
+                    <div class="access-filters-list" id="access-filters" aria-label="Filtros por tipo de acesso">
+                        <button class="access-filter-chip access-filter-chip--free" type="button" data-access-filter="free" aria-pressed="false">Gratuito 🆓</button>
+                        <button class="access-filter-chip access-filter-chip--paid" type="button" data-access-filter="paid" aria-pressed="false">Pago 💲</button>
+                    </div>
                 </div>
 
                 <div class="topbar">
@@ -44,7 +48,7 @@
                             <button class="nav-button" id="prev-month" type="button" aria-label="Mês anterior">&#10094;</button>
                             <div>
                                 <h2 class="month-title" id="month-label">Março de 2026</h2>
-                                <p class="toolbar-note" id="toolbar-note">Clique em um dia para visualizar a programação.</p>
+                                <p class="toolbar-note" id="toolbar-note" hidden>Clique em um dia para visualizar a programação.</p>
                             </div>
                             <button class="nav-button" id="next-month" type="button" aria-label="Próximo mês">&#10095;</button>
                         </div>

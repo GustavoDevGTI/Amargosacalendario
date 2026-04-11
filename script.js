@@ -30,7 +30,7 @@
         }
     };
     const EVENT_CATEGORIES = [
-        { id: "danca", label: "Dança", color: "#f39c12" },
+        { id: "danca", label: "Dança", color: "#8f5b2e" },
         { id: "educacao", label: "Educação", color: "#2d8cff" },
         { id: "exposicao", label: "Exposição", color: "#b34df4" },
         { id: "festas-populares", label: "Festas Populares", color: "#ff5a4f" },
@@ -54,6 +54,7 @@
         loginTrigger: document.getElementById("login-trigger"),
         adminPill: document.getElementById("admin-pill"),
         logoutTrigger: document.getElementById("logout-trigger"),
+        accessFilters: document.getElementById("access-filters"),
         categoryFilters: document.getElementById("category-filters"),
         monthLabel: document.getElementById("month-label"),
         toolbarNote: document.getElementById("toolbar-note"),
@@ -115,6 +116,7 @@
         isDarkMode: loadThemeState(),
         calendarLayoutMode: resolveFallbackCalendarLayoutMode(detectEmbedMode()),
         activeCategoryFilter: CATEGORY_FILTER_ALL,
+        activeAccessFilter: CATEGORY_FILTER_ALL,
         session: null,
         events: {},
         eventsError: "",
@@ -236,6 +238,7 @@
             openModal(refs.loginModal, refs.loginEmail);
         });
         refs.logoutTrigger.addEventListener("click", logout);
+        refs.accessFilters.addEventListener("click", handleAccessFilterClick);
         refs.categoryFilters.addEventListener("click", handleCategoryFilterClick);
         refs.prevMonth.addEventListener("click", () => changeMonth(-1));
         refs.nextMonth.addEventListener("click", () => changeMonth(1));
@@ -279,6 +282,7 @@
         hideDayPreview();
         renderThemeState();
         renderAuthState();
+        renderAccessFilters();
         renderCategoryFilters();
         renderCalendar();
         renderAdminTools();
@@ -322,6 +326,14 @@
         refs.toolbarNote.textContent = loggedIn
             ? "Clique em um dia de hoje em diante para criar evento ou em um evento existente para editar."
             : "Clique em um dia para consultar a programação disponível.";
+    }
+
+    function renderAccessFilters() {
+        refs.accessFilters.querySelectorAll("[data-access-filter]").forEach((button) => {
+            const isActive = button.getAttribute("data-access-filter") === state.activeAccessFilter;
+            button.classList.toggle("active", isActive);
+            button.setAttribute("aria-pressed", String(isActive));
+        });
     }
 
     function renderCategoryFilters() {
@@ -684,6 +696,17 @@
             state.activeCategoryFilter = nextFilter;
             render();
         }
+    }
+
+    function handleAccessFilterClick(event) {
+        const button = event.target.closest("[data-access-filter]");
+        if (!button) {
+            return;
+        }
+
+        const nextFilter = sanitizeAccessType(button.getAttribute("data-access-filter"));
+        state.activeAccessFilter = state.activeAccessFilter === nextFilter ? CATEGORY_FILTER_ALL : nextFilter;
+        render();
     }
 
     function handleDayClick(dateKey) {
@@ -1323,7 +1346,9 @@
 
     function getFilteredEventsForDate(dateKey) {
         return getEventsForDate(dateKey).filter((eventItem) => {
-            return state.activeCategoryFilter === CATEGORY_FILTER_ALL || sanitizeEventCategories(eventItem.categories).includes(state.activeCategoryFilter);
+            const matchesCategory = state.activeCategoryFilter === CATEGORY_FILTER_ALL || sanitizeEventCategories(eventItem.categories).includes(state.activeCategoryFilter);
+            const matchesAccess = state.activeAccessFilter === CATEGORY_FILTER_ALL || sanitizeAccessType(eventItem.accessType) === state.activeAccessFilter;
+            return matchesCategory && matchesAccess;
         });
     }
 

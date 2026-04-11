@@ -100,6 +100,48 @@
             max-width: 760px;
         }
 
+        .access-filters-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .access-filter-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            padding: 0 16px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--access-color, var(--primary));
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--access-color, var(--primary-dark));
+            font: inherit;
+            font-size: 0.92rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .access-filter-chip--free {
+            --access-color: #12a594;
+        }
+
+        .access-filter-chip--paid {
+            --access-color: #d18b13;
+        }
+
+        .access-filter-chip:hover {
+            transform: translateY(-2px);
+        }
+
+        .access-filter-chip.active {
+            background: var(--access-color);
+            color: #ffffff;
+            box-shadow: 0 12px 22px rgba(26, 37, 46, 0.14);
+        }
+
         h1 {
             margin: 0;
             font-family: "Poppins", sans-serif;
@@ -435,6 +477,7 @@
         }
 
         body.theme-dark .category-filter-chip,
+        body.theme-dark .access-filter-chip,
         body.theme-dark .category-picker-pill,
         body.theme-dark .display-style-pill,
         body.theme-dark .access-type-pill {
@@ -442,6 +485,7 @@
         }
 
         body.theme-dark .category-filter-chip.active,
+        body.theme-dark .access-filter-chip.active,
         body.theme-dark .category-picker-input:checked + .category-picker-pill,
         body.theme-dark .display-style-input:checked + .display-style-pill,
         body.theme-dark .access-type-input:checked + .access-type-pill {
@@ -2004,7 +2048,8 @@
 
             .section-head {
                 padding-top: 22px;
-                flex-direction: column;
+                flex-direction: row;
+                align-items: flex-start;
             }
 
             .category-filters-panel {
@@ -2018,12 +2063,13 @@
             }
 
             .topbar {
-                width: 100%;
-                justify-items: start;
+                width: auto;
+                justify-items: end;
+                margin-left: auto;
             }
 
             .auth-panel {
-                justify-content: flex-start;
+                justify-content: flex-end;
             }
 
             .calendar-toolbar {
@@ -2154,6 +2200,10 @@
             .modal-actions-right > button,
             .auth-panel > button {
                 flex: 1 1 auto;
+            }
+
+            .topbar .auth-panel > button {
+                flex: 0 0 auto;
             }
         }
 
@@ -2481,12 +2531,12 @@
 
         @media (max-width: 980px) {
             body.embed-mode .section-head {
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr) auto;
             }
 
             body.embed-mode .topbar {
-                width: 100%;
-                justify-items: start;
+                width: auto;
+                justify-items: end;
             }
         }
 
@@ -2516,12 +2566,13 @@
 
             body.embed-mode .section-head {
                 padding-top: 18px;
+                grid-template-columns: minmax(0, 1fr) auto;
             }
 
             body.embed-mode .topbar-meta,
             body.embed-mode .auth-panel {
-                width: 100%;
-                justify-content: flex-start;
+                width: auto;
+                justify-content: flex-end;
             }
 
             body.embed-mode .auth-panel {
