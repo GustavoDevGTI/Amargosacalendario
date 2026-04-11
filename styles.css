@@ -2081,7 +2081,7 @@
             }
 
             .day-cell {
-                min-height: 88px;
+                min-height: 70px;
                 gap: 8px;
             }
 
@@ -2092,6 +2092,13 @@
             .calendar-grid {
                 gap: 6px;
                 padding: 0 10px 14px;
+                overflow-x: auto;
+                grid-template-columns: repeat(7, minmax(82px, 1fr));
+                scrollbar-width: thin;
+            }
+
+            .calendar-grid > * {
+                min-width: 82px;
             }
 
             .event-chip {
@@ -2109,11 +2116,11 @@
             }
 
             .event-chip-title {
-                font-size: 0.76rem;
+                font-size: 0.72rem;
             }
 
             .event-chip-time {
-                font-size: 0.68rem;
+                display: none;
             }
 
             .event-category-list--compact .event-category-badge,
@@ -2544,10 +2551,41 @@
             body.embed-mode .calendar-grid {
                 gap: 6px;
                 padding: 0 10px 14px;
+                overflow-x: auto;
+                grid-template-columns: repeat(7, minmax(84px, 1fr));
+                scrollbar-width: thin;
+            }
+
+            body.embed-mode .calendar-grid > * {
+                min-width: 84px;
             }
 
             body.embed-mode .day-cell {
-                min-height: 88px;
+                min-height: 64px;
+                gap: 5px;
+                padding: 7px;
+            }
+
+            body.embed-mode .event-list {
+                gap: 3px;
+            }
+
+            body.embed-mode .event-chip--bar,
+            body.embed-mode .event-chip--dot {
+                min-height: 18px;
+            }
+
+            body.embed-mode .event-chip--bar {
+                padding: 2px 5px;
+            }
+
+            body.embed-mode .event-chip-time {
+                display: none;
+            }
+
+            body.embed-mode .event-chip-title {
+                font-size: 0.68rem;
+                line-height: 1.2;
             }
         }
 
