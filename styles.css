@@ -988,17 +988,19 @@
 
         .day-cell--dense .event-chip--paid,
         .day-cell--dense .event-chip--free {
-            padding-right: 8px;
+            padding-right: 26px;
             padding-top: 8px;
         }
 
         .day-cell--dense .event-chip--paid::before,
         .day-cell--dense .event-chip--free::before {
-            top: 0;
-            right: 10px;
-            width: 13px;
-            height: 24px;
+            top: 50%;
+            right: 3px;
+            width: 18px;
+            height: 18px;
             padding: 0;
+            transform: translateY(-50%);
+            font-size: 0.62rem;
         }
 
         .day-cell--dense .event-chip--paid::after,
@@ -1103,19 +1105,27 @@
 
         .event-chip--paid::before,
         .event-chip--free::before {
-            content: "";
+            content: "🆓";
             position: absolute;
-            top: 0;
-            right: 12px;
+            top: 3px;
+            right: 5px;
             z-index: 1;
-            width: 16px;
-            height: 28px;
+            display: inline-grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
             padding: 0;
-            background: var(--access-flag-color);
-            border-radius: 0 0 8px 8px;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
-            box-shadow: 0 8px 16px rgba(var(--access-flag-rgb), 0.24);
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(var(--access-flag-rgb), 0.34);
+            border-radius: 999px;
+            box-shadow: 0 6px 12px rgba(var(--access-flag-rgb), 0.18);
+            font-size: 0.7rem;
+            line-height: 1;
             pointer-events: none;
+        }
+
+        .event-chip--paid::before {
+            content: "💲";
         }
 
         .event-chip--paid::after,
@@ -1180,7 +1190,7 @@
         .event-chip--bar.event-chip--free,
         .event-chip--dot.event-chip--paid,
         .event-chip--dot.event-chip--free {
-            padding-right: 0;
+            padding-right: 28px;
             padding-top: 0;
             box-shadow: none;
         }
@@ -1189,7 +1199,12 @@
         .event-chip--bar.event-chip--free::before,
         .event-chip--dot.event-chip--paid::before,
         .event-chip--dot.event-chip--free::before {
-            content: none;
+            top: 50%;
+            right: 3px;
+            width: 18px;
+            height: 18px;
+            transform: translateY(-50%);
+            font-size: 0.62rem;
         }
 
         .event-chip-dot {
@@ -1729,18 +1744,26 @@
 
         .day-preview-item--paid::before,
         .day-preview-item--free::before {
-            content: "";
+            content: "🆓";
             position: absolute;
-            top: 0;
-            right: 12px;
+            top: 10px;
+            right: 10px;
             z-index: 1;
-            width: 14px;
+            display: inline-grid;
+            place-items: center;
+            width: 24px;
             height: 24px;
-            background: var(--access-flag-color);
-            border-radius: 0 0 7px 7px;
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
-            box-shadow: 0 8px 14px rgba(var(--access-flag-rgb), 0.22);
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(var(--access-flag-rgb), 0.34);
+            border-radius: 999px;
+            box-shadow: 0 7px 14px rgba(var(--access-flag-rgb), 0.18);
+            font-size: 0.72rem;
+            line-height: 1;
             pointer-events: none;
+        }
+
+        .day-preview-item--paid::before {
+            content: "💲";
         }
 
         .day-preview-time {
@@ -2511,17 +2534,19 @@
 
         body.embed-mode .event-chip--paid,
         body.embed-mode .event-chip--free {
-            padding-right: 8px;
+            padding-right: 26px;
             padding-top: 8px;
         }
 
         body.embed-mode .event-chip--paid::before,
         body.embed-mode .event-chip--free::before {
-            top: 0;
-            right: 10px;
-            width: 13px;
-            height: 24px;
+            top: 50%;
+            right: 3px;
+            width: 18px;
+            height: 18px;
             padding: 0;
+            transform: translateY(-50%);
+            font-size: 0.62rem;
         }
 
         body.embed-mode .event-chip--paid::after,
@@ -2534,12 +2559,12 @@
         body.embed-mode .event-chip--dot.event-chip--paid,
         body.embed-mode .event-chip--dot.event-chip--free {
             padding-top: 0;
-            padding-right: 0;
+            padding-right: 26px;
         }
 
         body.embed-mode .event-chip--bar.event-chip--paid,
         body.embed-mode .event-chip--bar.event-chip--free {
-            padding: 3px 7px;
+            padding: 3px 26px 3px 7px;
         }
 
         body.embed-mode .event-chip-title,
