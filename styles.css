@@ -1624,7 +1624,7 @@
             min-height: 0;
             padding: 24px 28px 28px;
             overflow-y: auto;
-            overscroll-behavior: contain;
+            overscroll-behavior-y: auto;
         }
 
         .modal--day-details .modal-body {

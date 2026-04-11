@@ -260,6 +260,7 @@
                 }
             });
         });
+        setupModalScrollChaining();
         document.addEventListener("keydown", (event) => {
             if (event.key === "Escape") {
                 closeModal(refs.loginModal);
@@ -1787,6 +1788,57 @@
         if (modal === refs.imageViewerModal) {
             refs.imageViewerImage.removeAttribute("src");
             refs.imageViewerImage.alt = "";
+        }
+    }
+
+    function setupModalScrollChaining() {
+        if (!state.isEmbedMode || window.parent === window) {
+            return;
+        }
+
+        [refs.loginModal, refs.eventModal, refs.dayDetailsModal, refs.imageViewerModal].forEach((modal) => {
+            const modalBody = modal.querySelector(".modal-body");
+            if (!modalBody) {
+                return;
+            }
+
+            let previousTouchY = 0;
+            modalBody.addEventListener("touchstart", (event) => {
+                previousTouchY = event.touches && event.touches[0] ? event.touches[0].clientY : 0;
+            }, { passive: true });
+
+            modalBody.addEventListener("touchmove", (event) => {
+                if (!modal.classList.contains("open") || !event.touches || !event.touches[0]) {
+                    return;
+                }
+
+                const currentTouchY = event.touches[0].clientY;
+                const deltaY = previousTouchY - currentTouchY;
+                previousTouchY = currentTouchY;
+                relayScrollToParentAtBoundary(modalBody, deltaY, event);
+            }, { passive: false });
+
+            modalBody.addEventListener("wheel", (event) => {
+                if (modal.classList.contains("open")) {
+                    relayScrollToParentAtBoundary(modalBody, event.deltaY, event);
+                }
+            }, { passive: false });
+        });
+    }
+
+    function relayScrollToParentAtBoundary(scrollElement, deltaY, event) {
+        if (!deltaY) {
+            return;
+        }
+
+        const atTop = scrollElement.scrollTop <= 0;
+        const atBottom = Math.ceil(scrollElement.scrollTop + scrollElement.clientHeight) >= scrollElement.scrollHeight;
+        if ((deltaY < 0 && atTop) || (deltaY > 0 && atBottom)) {
+            event.preventDefault();
+            window.parent.postMessage({
+                type: "amargosa-calendar-scroll",
+                deltaY
+            }, window.location.origin);
         }
     }
 
