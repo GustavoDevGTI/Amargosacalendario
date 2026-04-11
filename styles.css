@@ -751,12 +751,16 @@
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, minmax(0, 1fr));
-            gap: 14px;
+            gap: 0;
             padding: 0 24px 24px;
+            border-top: 1px solid rgba(21, 124, 98, 0.12);
+            border-left: 1px solid rgba(21, 124, 98, 0.12);
         }
 
         .weekday {
-            padding: 0 4px 4px;
+            padding: 8px 4px;
+            border-right: 1px solid rgba(21, 124, 98, 0.12);
+            border-bottom: 1px solid rgba(21, 124, 98, 0.12);
             color: var(--muted);
             font-size: 0.78rem;
             font-weight: 800;
@@ -768,15 +772,17 @@
         .day-cell {
             position: relative;
             min-height: 150px;
-            padding: 14px;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(21, 124, 98, 0.08);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 245, 255, 0.88));
+            padding: 8px 4px 8px 6px;
+            border-radius: 0;
+            border: 0;
+            border-right: 1px solid rgba(21, 124, 98, 0.12);
+            border-bottom: 1px solid rgba(21, 124, 98, 0.12);
+            background: rgba(255, 255, 255, 0.94);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 5px;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .day-cell:focus-visible,
@@ -795,20 +801,15 @@
         }
 
         .day-cell.selected {
-            border-color: rgba(21, 124, 98, 0.34);
-            box-shadow: 0 14px 26px rgba(21, 124, 98, 0.12);
+            box-shadow: inset 0 0 0 2px rgba(21, 124, 98, 0.45);
         }
 
         .day-cell.today {
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(212, 175, 55, 0.12)),
-                linear-gradient(135deg, rgba(21, 124, 98, 0.08), rgba(245, 245, 255, 0.9));
-            border-color: rgba(212, 175, 55, 0.42);
+            background: rgba(212, 175, 55, 0.08);
         }
 
         .day-cell.past {
-            background: linear-gradient(180deg, rgba(244, 247, 246, 0.98), rgba(236, 240, 239, 0.92));
-            border-color: rgba(21, 124, 98, 0.1);
+            background: rgba(244, 247, 246, 0.74);
         }
 
         .day-cell.outside {
@@ -816,14 +817,15 @@
         }
 
         .day-cell.has-events {
-            border-color: rgba(21, 124, 98, 0.18);
+            background: rgba(255, 255, 255, 0.98);
         }
 
         .day-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 6px;
+            min-height: 18px;
         }
 
         .day-number {
@@ -836,7 +838,7 @@
             background: transparent;
             color: var(--primary-dark);
             font-weight: 800;
-            font-size: 1.05rem;
+            font-size: 0.92rem;
             line-height: 1;
         }
 
@@ -922,8 +924,8 @@
 
         .day-cell--dense {
             min-height: 122px;
-            gap: 8px;
-            padding: 10px;
+            gap: 4px;
+            padding: 7px 4px 7px 6px;
         }
 
         .day-cell--dense .day-head {
@@ -940,7 +942,7 @@
         }
 
         .day-cell--dense .event-list {
-            gap: 5px;
+            gap: 2px;
         }
 
         .day-cell--dense .event-chip {
@@ -988,8 +990,8 @@
 
         .day-cell--compact {
             min-height: 78px;
-            gap: 6px;
-            padding: 8px;
+            gap: 4px;
+            padding: 6px 3px 6px 5px;
         }
 
         .day-cell--compact .day-head {
@@ -1027,7 +1029,7 @@
 
         .event-list {
             display: grid;
-            gap: 6px;
+            gap: 2px;
             align-content: start;
         }
 
@@ -1115,25 +1117,25 @@
 
         .event-chip--bar,
         .event-chip--dot {
-            min-height: 24px;
+            min-height: 20px;
             padding: 0;
-            border-radius: 6px;
+            border-radius: 3px;
             border: 0;
             box-shadow: none;
         }
 
         .event-chip--bar {
             display: block;
-            padding: 4px 8px;
+            padding: 3px 5px;
             background: var(--event-color, var(--primary));
             color: #ffffff;
         }
 
         .event-chip--dot {
             display: grid;
-            grid-template-columns: 9px minmax(0, 1fr);
+            grid-template-columns: 7px minmax(0, 1fr);
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             background: transparent;
             color: var(--text);
         }
@@ -1155,8 +1157,8 @@
         }
 
         .event-chip-dot {
-            width: 9px;
-            height: 9px;
+            width: 7px;
+            height: 7px;
             border-radius: 999px;
             background: var(--event-color, var(--primary));
         }
@@ -2124,14 +2126,14 @@
             }
 
             .calendar-grid {
-                gap: 8px;
+                gap: 0;
                 padding: 0 16px 18px;
             }
 
             .day-cell {
                 min-height: 124px;
-                padding: 10px;
-                border-radius: var(--radius-md);
+                padding: 7px 4px 7px 6px;
+                border-radius: 0;
             }
 
             .day-number {
@@ -2160,7 +2162,8 @@
 
             .day-cell {
                 min-height: 70px;
-                gap: 8px;
+                gap: 4px;
+                padding: 5px 2px 5px 4px;
             }
 
             .day-tag {
@@ -2168,7 +2171,7 @@
             }
 
             .calendar-grid {
-                gap: 6px;
+                gap: 0;
                 padding: 0 10px 14px;
                 overflow-x: hidden;
                 grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -2658,20 +2661,20 @@
             }
 
             body.embed-mode .calendar-grid {
-                gap: 6px;
-                padding: 0 10px 8px;
+                gap: 0;
+                padding: 0 0 6px;
                 overflow-x: hidden;
                 grid-template-columns: repeat(7, minmax(0, 1fr));
             }
 
             body.embed-mode .day-cell {
                 min-height: 82px;
-                gap: 5px;
-                padding: 7px;
+                gap: 3px;
+                padding: 5px 2px 5px 4px;
             }
 
             body.embed-mode .event-list {
-                gap: 3px;
+                gap: 2px;
             }
 
             body.embed-mode .event-chip--bar,
@@ -2680,7 +2683,7 @@
             }
 
             body.embed-mode .event-chip--bar {
-                padding: 2px 5px;
+                padding: 2px 4px;
             }
 
             body.embed-mode .event-chip-time {
