@@ -451,6 +451,20 @@
             background: linear-gradient(180deg, rgba(16, 22, 20, 0.98), rgba(11, 16, 14, 0.94));
         }
 
+        body.theme-dark .day-cell.past.has-events,
+        body.theme-dark .day-cell.past.outside {
+            background: linear-gradient(180deg, rgba(12, 17, 15, 0.98), rgba(8, 12, 10, 0.95));
+        }
+
+        body.theme-dark .day-cell.past .day-number {
+            color: rgba(174, 187, 181, 0.46);
+        }
+
+        body.theme-dark .day-cell.past .event-chip {
+            opacity: 0.5;
+            filter: grayscale(0.72);
+        }
+
         body.theme-dark .day-cell.today {
             background:
                 linear-gradient(180deg, rgba(30, 34, 23, 0.98), rgba(55, 43, 18, 0.24)),
@@ -809,15 +823,37 @@
         }
 
         .day-cell.past {
-            background: rgba(244, 247, 246, 0.74);
+            background: rgba(219, 226, 223, 0.92);
         }
 
         .day-cell.outside {
-            opacity: 0.54;
+            opacity: 0.58;
         }
 
         .day-cell.has-events {
             background: rgba(255, 255, 255, 0.98);
+        }
+
+        .day-cell.past.has-events,
+        .day-cell.past.outside {
+            background: rgba(213, 222, 218, 0.94);
+        }
+
+        .day-cell.past .day-number {
+            color: rgba(47, 61, 55, 0.5);
+        }
+
+        .day-cell.past .event-chip {
+            opacity: 0.48;
+            filter: grayscale(0.72);
+        }
+
+        .day-cell.past .event-chip--bar {
+            background: rgba(var(--event-color-rgb, 21, 124, 98), 0.42);
+        }
+
+        .day-cell.past .event-chip-dot {
+            opacity: 0.72;
         }
 
         .day-head {
