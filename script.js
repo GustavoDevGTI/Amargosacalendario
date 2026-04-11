@@ -12,6 +12,8 @@
     const MAX_DESCRIPTION_LENGTH = 200;
     const ACCESS_TYPE_FREE = "free";
     const ACCESS_TYPE_PAID = "paid";
+    const DISPLAY_STYLE_DOT = "dot";
+    const DISPLAY_STYLE_BAR = "bar";
     const MAX_EVENT_IMAGE_BYTES = 4 * 1024 * 1024;
     const EVENT_IMAGE_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
     const CALENDAR_CELL_WIDTH_DENSE = 132;
@@ -86,6 +88,7 @@
         eventImagePreviewImage: document.getElementById("event-image-preview-img"),
         removeEventImageButton: document.getElementById("remove-event-image-button"),
         eventAccessOptions: document.getElementById("event-access-options"),
+        eventDisplayOptions: document.getElementById("event-display-options"),
         eventCategoryOptions: document.getElementById("event-category-options"),
         eventError: document.getElementById("event-error"),
         deleteEventButton: document.getElementById("delete-event-button"),
@@ -411,58 +414,14 @@
 
             const eventList = document.createElement("div");
             eventList.className = "event-list";
-            const primaryEvent = cellEvents[0];
-            if (primaryEvent) {
-                const calendarEvent = primaryEvent;
-                const categoryDetails = getEventCategoryDetails(calendarEvent.categories);
-                const primaryCategory = getPrimaryEventCategory(categoryDetails);
-                const item = document.createElement("button");
-                item.type = "button";
-                item.className = "event-chip";
-                item.classList.toggle("event-chip--paid", isPaidEvent(calendarEvent));
-                item.classList.toggle("event-chip--free", !isPaidEvent(calendarEvent));
-                applyEventAccent(item, primaryCategory);
-                item.innerHTML = "";
+            cellEvents.slice(0, 3).forEach((calendarEvent) => {
+                eventList.appendChild(buildCalendarEventChip(calendarEvent, cellKey));
+            });
 
-                const title = document.createElement("strong");
-                title.className = "event-chip-title";
-                title.textContent = calendarEvent.title;
-
-                const time = document.createElement("span");
-                time.className = "event-chip-time";
-                time.textContent = calendarEvent.time || "Horario a definir";
-
-                item.append(title, time);
-
-                if (!denseView) {
-                    const categories = buildEventCategoryList(categoryDetails, {
-                        maxVisible: 2,
-                        compact: true,
-                        accentColor: primaryCategory ? primaryCategory.color : ""
-                    });
-                    if (categories) {
-                        item.appendChild(categories);
-                    }
-                }
-
-                item.addEventListener("click", (event) => {
-                    event.stopPropagation();
-                    state.selectedDate = cellKey;
-                    if (isLoggedIn()) {
-                        closeModal(refs.dayDetailsModal);
-                        openEventModal(cellKey, calendarEvent.id);
-                    } else {
-                        render();
-                        openDayDetailsModal(cellKey);
-                    }
-                });
-                eventList.appendChild(item);
-            }
-
-            const remainingEventCount = Math.max(0, cellEvents.length - 1);
+            const remainingEventCount = Math.max(0, cellEvents.length - 3);
             if (remainingEventCount > 0) {
-                const nextEvent = cellEvents[1];
-                const hiddenEvents = cellEvents.slice(1);
+                const nextEvent = cellEvents[3];
+                const hiddenEvents = cellEvents.slice(3);
                 const nextCategory = nextEvent
                     ? getPrimaryEventCategory(getEventCategoryDetails(nextEvent.categories))
                     : null;
@@ -481,6 +440,59 @@
             cell.appendChild(eventList);
             refs.calendarGrid.appendChild(cell);
         }
+    }
+
+    function buildCalendarEventChip(calendarEvent, dateKey) {
+        const categoryDetails = getEventCategoryDetails(calendarEvent.categories);
+        const primaryCategory = getPrimaryEventCategory(categoryDetails);
+        const item = document.createElement("button");
+        const fullBar = isFullBarEvent(calendarEvent);
+        item.type = "button";
+        item.className = "event-chip " + (fullBar ? "event-chip--bar" : "event-chip--dot");
+        item.classList.toggle("event-chip--paid", isPaidEvent(calendarEvent));
+        item.classList.toggle("event-chip--free", !isPaidEvent(calendarEvent));
+        applyEventAccent(item, primaryCategory);
+
+        if (fullBar) {
+            const title = document.createElement("strong");
+            title.className = "event-chip-title";
+            title.textContent = calendarEvent.title;
+            item.appendChild(title);
+        } else {
+            const marker = document.createElement("span");
+            marker.className = "event-chip-dot";
+            marker.setAttribute("aria-hidden", "true");
+
+            const text = document.createElement("span");
+            text.className = "event-chip-inline";
+
+            if (calendarEvent.time) {
+                const time = document.createElement("span");
+                time.className = "event-chip-time";
+                time.textContent = calendarEvent.time;
+                text.appendChild(time);
+            }
+
+            const title = document.createElement("strong");
+            title.className = "event-chip-title";
+            title.textContent = calendarEvent.title;
+            text.appendChild(title);
+            item.append(marker, text);
+        }
+
+        item.addEventListener("click", (event) => {
+            event.stopPropagation();
+            state.selectedDate = dateKey;
+            if (isLoggedIn()) {
+                closeModal(refs.dayDetailsModal);
+                openEventModal(dateKey, calendarEvent.id);
+            } else {
+                render();
+                openDayDetailsModal(dateKey);
+            }
+        });
+
+        return item;
     }
 
     function renderSidebar() {
@@ -603,9 +615,18 @@
         }
         let { data, error } = await client
             .from(getEventsTableName())
-            .select("id, event_date, title, event_time, description, categories, image_url, access_type")
+            .select("id, event_date, title, event_time, description, categories, image_url, access_type, display_style")
             .order("event_date", { ascending: true })
             .order("title", { ascending: true });
+        if (error && isMissingDisplayStyleColumnError(error)) {
+            const fallbackResponse = await client
+                .from(getEventsTableName())
+                .select("id, event_date, title, event_time, description, categories, image_url, access_type")
+                .order("event_date", { ascending: true })
+                .order("title", { ascending: true });
+            data = fallbackResponse.data;
+            error = fallbackResponse.error;
+        }
         if (error && isMissingAccessTypeColumnError(error)) {
             const fallbackResponse = await client
                 .from(getEventsTableName())
@@ -997,6 +1018,7 @@
             refs.eventDescription.value = currentEvent.description || "";
             setSelectedEventCategories(currentEvent.categories || []);
             setSelectedAccessType(currentEvent.accessType);
+            setSelectedDisplayStyle(currentEvent.displayStyle);
             setEventFormMode(isPastEvent ? "delete-only" : "edit");
             refs.eventModalTitle.textContent = isPastEvent ? "Excluir evento" : "Editar evento";
             refs.eventModalSubtitle.textContent = isPastEvent
@@ -1009,6 +1031,7 @@
             refs.eventModalSubtitle.textContent = "Preencha os dados abaixo para criar um evento nesta data.";
             setSelectedEventCategories(state.activeCategoryFilter === CATEGORY_FILTER_ALL ? [] : [state.activeCategoryFilter]);
             setSelectedAccessType(ACCESS_TYPE_FREE);
+            setSelectedDisplayStyle(DISPLAY_STYLE_DOT);
             renderEventImagePreview("");
             refs.deleteEventButton.hidden = true;
         }
@@ -1033,6 +1056,7 @@
         const rawDescription = refs.eventDescription.value;
         const categories = getSelectedEventCategories();
         const accessType = getSelectedAccessType();
+        const displayStyle = getSelectedDisplayStyle();
         const imageFile = refs.eventImageInput.files && refs.eventImageInput.files[0] ? refs.eventImageInput.files[0] : null;
 
         if (!isLoggedIn()) {
@@ -1072,6 +1096,7 @@
             description: sanitizeDescription(rawDescription),
             categories,
             access_type: accessType,
+            display_style: displayStyle,
             image_url: sanitizeImageUrl(refs.eventImageUrlInput.value) || null
         };
         if (imageFile) {
@@ -1083,17 +1108,7 @@
             }
             payload.image_url = uploadResult.url;
         }
-        const response = eventId
-            ? await client.from(getEventsTableName()).update({
-                event_date: payload.event_date,
-                title: payload.title,
-                event_time: payload.event_time,
-                description: payload.description,
-                categories: payload.categories,
-                access_type: payload.access_type,
-                image_url: payload.image_url || null
-            }).eq("id", eventId)
-            : await client.from(getEventsTableName()).insert(payload);
+        const response = await saveEventPayload(payload, eventId);
         setSaveBusy(false);
 
         if (response.error) {
@@ -1128,6 +1143,39 @@
         await refreshEvents({ silent: true, showToastOnError: false });
         closeModal(refs.eventModal);
         showToast("Evento excluído.");
+    }
+
+    async function saveEventPayload(payload, eventId = "") {
+        const response = eventId
+            ? await client.from(getEventsTableName()).update(buildEventMutationPayload(payload, true)).eq("id", eventId)
+            : await client.from(getEventsTableName()).insert(payload);
+
+        if (!response.error || !isMissingDisplayStyleColumnError(response.error)) {
+            return response;
+        }
+
+        const fallbackPayload = buildEventMutationPayload(payload, false);
+        return eventId
+            ? client.from(getEventsTableName()).update(fallbackPayload).eq("id", eventId)
+            : client.from(getEventsTableName()).insert(Object.assign({ id: payload.id }, fallbackPayload));
+    }
+
+    function buildEventMutationPayload(payload, includeDisplayStyle) {
+        const mutationPayload = {
+            event_date: payload.event_date,
+            title: payload.title,
+            event_time: payload.event_time,
+            description: payload.description,
+            categories: payload.categories,
+            access_type: payload.access_type,
+            image_url: payload.image_url || null
+        };
+
+        if (includeDisplayStyle) {
+            mutationPayload.display_style = payload.display_style;
+        }
+
+        return mutationPayload;
     }
 
     function handleEventImageSelection() {
@@ -1299,6 +1347,7 @@
                 description: sanitizeDescription(row.description || ""),
                 categories: sanitizeEventCategories(row.categories || []),
                 accessType: sanitizeAccessType(row.access_type),
+                displayStyle: sanitizeDisplayStyle(row.display_style),
                 imageUrl: sanitizeImageUrl(row.image_url || "")
             });
             map[dateKey] = sortEvents(map[dateKey]);
@@ -1325,6 +1374,7 @@
                     description: sanitizeDescription(eventItem.description || ""),
                     categories: sanitizeEventCategories(eventItem.categories || []),
                     access_type: sanitizeAccessType(eventItem.accessType),
+                    display_style: sanitizeDisplayStyle(eventItem.displayStyle),
                     image_url: sanitizeImageUrl(eventItem.imageUrl || "") || null
                 });
             });
@@ -1355,12 +1405,32 @@
         });
     }
 
+    function getSelectedDisplayStyle() {
+        const selectedInput = refs.eventDisplayOptions.querySelector("input[name=\"displayStyle\"]:checked");
+        return sanitizeDisplayStyle(selectedInput ? selectedInput.value : "");
+    }
+
+    function setSelectedDisplayStyle(value) {
+        const selected = sanitizeDisplayStyle(value);
+        refs.eventDisplayOptions.querySelectorAll("input[name=\"displayStyle\"]").forEach((input) => {
+            input.checked = input.value === selected;
+        });
+    }
+
     function sanitizeAccessType(value) {
         return String(value || "").trim() === ACCESS_TYPE_PAID ? ACCESS_TYPE_PAID : ACCESS_TYPE_FREE;
     }
 
+    function sanitizeDisplayStyle(value) {
+        return String(value || "").trim() === DISPLAY_STYLE_BAR ? DISPLAY_STYLE_BAR : DISPLAY_STYLE_DOT;
+    }
+
     function isPaidEvent(eventItem) {
         return sanitizeAccessType(eventItem && eventItem.accessType) === ACCESS_TYPE_PAID;
+    }
+
+    function isFullBarEvent(eventItem) {
+        return sanitizeDisplayStyle(eventItem && eventItem.displayStyle) === DISPLAY_STYLE_BAR;
     }
 
     function hasOnlyPaidEvents(events) {
@@ -1723,6 +1793,9 @@
         refs.eventAccessOptions.querySelectorAll("input[name=\"accessType\"]").forEach((input) => {
             input.disabled = isDeleteOnly;
         });
+        refs.eventDisplayOptions.querySelectorAll("input[name=\"displayStyle\"]").forEach((input) => {
+            input.disabled = isDeleteOnly;
+        });
         refs.eventCategoryOptions.querySelectorAll("input[name=\"categories\"]").forEach((input) => {
             input.disabled = isDeleteOnly;
         });
@@ -1797,6 +1870,11 @@
         return rawMessage.includes("access_type");
     }
 
+    function isMissingDisplayStyleColumnError(error) {
+        const rawMessage = String((error && error.message) || "").trim().toLowerCase();
+        return rawMessage.includes("display_style");
+    }
+
     function normalizeSupabaseError(error, fallbackMessage) {
         const rawMessage = String((error && error.message) || "").trim().toLowerCase();
         if (!rawMessage) {
@@ -1822,6 +1900,9 @@
         }
         if (rawMessage.includes("access_type")) {
             return "A coluna access_type ainda nao existe. Execute novamente o arquivo supabase-setup.sql no Supabase.";
+        }
+        if (rawMessage.includes("display_style")) {
+            return "A coluna display_style ainda nao existe. Execute novamente o arquivo supabase-setup.sql no Supabase.";
         }
         if (rawMessage.includes("failed to fetch")) {
             return "Não foi possível conectar ao banco online agora.";

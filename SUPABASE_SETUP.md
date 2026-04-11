@@ -13,7 +13,7 @@
 - Use a chave `anon`, não a `service_role`.
 - As policies atuais já restringem edição para o e-mail `admincalendarioamargosa@gmail.com`.
 - O arquivo `supabase-setup.sql` também cria o bucket público `calendar-event-images` para upload das imagens dos eventos.
-- Se o projeto já estava em uso antes dos campos de imagem e tipo de acesso, execute novamente o `supabase-setup.sql` no SQL Editor para criar as colunas `image_url` e `access_type`, ajustar a descrição para 200 caracteres e liberar a classificação `Gratuito/Pago`.
+- Se o projeto já estava em uso antes dos campos de imagem, tipo de acesso e visual no calendário, execute novamente o `supabase-setup.sql` no SQL Editor para criar as colunas `image_url`, `access_type` e `display_style`, ajustar a descrição para 200 caracteres e liberar a classificação `Gratuito/Pago` e `Ponto/Barra`.
 - Se este navegador já tinha eventos no `localStorage`, entre como admin e use o botão `Importar eventos locais`.
 
 ## Publicação no Netlify

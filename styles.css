@@ -436,12 +436,14 @@
 
         body.theme-dark .category-filter-chip,
         body.theme-dark .category-picker-pill,
+        body.theme-dark .display-style-pill,
         body.theme-dark .access-type-pill {
             background: rgba(255, 255, 255, 0.03);
         }
 
         body.theme-dark .category-filter-chip.active,
         body.theme-dark .category-picker-input:checked + .category-picker-pill,
+        body.theme-dark .display-style-input:checked + .display-style-pill,
         body.theme-dark .access-type-input:checked + .access-type-pill {
             color: #ffffff;
             box-shadow: 0 16px 26px rgba(0, 0, 0, 0.24);
@@ -486,6 +488,16 @@
 
         body.theme-dark .event-chip-time {
             color: rgba(237, 244, 240, 0.76);
+        }
+
+        body.theme-dark .event-chip--bar {
+            background: var(--event-color, var(--primary));
+            color: #ffffff;
+        }
+
+        body.theme-dark .event-chip--dot {
+            background: transparent;
+            color: #edf4f0;
         }
 
         body.theme-dark .event-category-badge {
@@ -964,7 +976,8 @@
         }
 
         .day-cell--compact .event-list {
-            display: none;
+            display: grid;
+            gap: 3px;
         }
 
         .event-list {
@@ -1053,6 +1066,89 @@
             color: rgba(47, 61, 55, 0.78);
             font-size: 0.72rem;
             line-height: 1.3;
+        }
+
+        .event-chip--bar,
+        .event-chip--dot {
+            min-height: 24px;
+            padding: 0;
+            border-radius: 6px;
+            border: 0;
+            box-shadow: none;
+        }
+
+        .event-chip--bar {
+            display: block;
+            padding: 4px 8px;
+            background: var(--event-color, var(--primary));
+            color: #ffffff;
+        }
+
+        .event-chip--dot {
+            display: grid;
+            grid-template-columns: 9px minmax(0, 1fr);
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            color: var(--text);
+        }
+
+        .event-chip--bar.event-chip--paid,
+        .event-chip--bar.event-chip--free,
+        .event-chip--dot.event-chip--paid,
+        .event-chip--dot.event-chip--free {
+            padding-right: 0;
+            padding-top: 0;
+            box-shadow: none;
+        }
+
+        .event-chip--bar.event-chip--paid::before,
+        .event-chip--bar.event-chip--free::before,
+        .event-chip--dot.event-chip--paid::before,
+        .event-chip--dot.event-chip--free::before {
+            content: none;
+        }
+
+        .event-chip-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: var(--event-color, var(--primary));
+        }
+
+        .event-chip-inline {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .event-chip--bar .event-chip-title,
+        .event-chip--dot .event-chip-title,
+        .event-chip--dot .event-chip-time {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-break: normal;
+            overflow-wrap: normal;
+        }
+
+        .event-chip--bar .event-chip-title {
+            color: inherit;
+            font-size: 0.78rem;
+            line-height: 1.25;
+        }
+
+        .event-chip--dot .event-chip-title {
+            display: inline;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .event-chip--dot .event-chip-time {
+            flex: 0 0 auto;
+            color: inherit;
+            font-size: 0.74rem;
         }
 
         .event-category-list {
@@ -1639,6 +1735,7 @@
         }
 
         .access-type-field,
+        .display-style-field,
         .category-picker-field {
             margin: 0;
             padding: 0;
@@ -1648,6 +1745,7 @@
         }
 
         .access-type-field legend,
+        .display-style-field legend,
         .category-picker-field legend {
             padding: 0;
             color: var(--primary-dark);
@@ -1655,13 +1753,15 @@
             font-weight: 700;
         }
 
-        .access-type-options {
+        .access-type-options,
+        .display-style-options {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
 
-        .access-type-option {
+        .access-type-option,
+        .display-style-option {
             --access-color: #12a594;
             --access-soft: rgba(18, 165, 148, 0.1);
             position: relative;
@@ -1672,14 +1772,16 @@
             --access-soft: rgba(209, 139, 19, 0.12);
         }
 
-        .access-type-input {
+        .access-type-input,
+        .display-style-input {
             position: absolute;
             inset: 0;
             opacity: 0;
             pointer-events: none;
         }
 
-        .access-type-pill {
+        .access-type-pill,
+        .display-style-pill {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -1695,17 +1797,20 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
         }
 
-        .access-type-pill:hover {
+        .access-type-pill:hover,
+        .display-style-pill:hover {
             transform: translateY(-2px);
         }
 
-        .access-type-input:checked + .access-type-pill {
+        .access-type-input:checked + .access-type-pill,
+        .display-style-input:checked + .display-style-pill {
             background: var(--access-color);
             color: #ffffff;
             box-shadow: 0 12px 22px rgba(26, 37, 46, 0.14);
         }
 
-        .access-type-input:focus-visible + .access-type-pill {
+        .access-type-input:focus-visible + .access-type-pill,
+        .display-style-input:focus-visible + .display-style-pill {
             outline: 3px solid rgba(51, 154, 128, 0.18);
             outline-offset: 2px;
         }
@@ -1767,11 +1872,13 @@
         }
 
         .event-form--delete-only .access-type-field,
+        .event-form--delete-only .display-style-field,
         .event-form--delete-only .category-picker-field {
             opacity: 0.68;
         }
 
         .event-form--delete-only .access-type-pill,
+        .event-form--delete-only .display-style-pill,
         .event-form--delete-only .category-picker-pill {
             cursor: default;
         }
@@ -1961,6 +2068,7 @@
 
             .category-filter-chip,
             .access-type-pill,
+            .display-style-pill,
             .category-picker-pill {
                 min-height: 38px;
                 padding: 0 14px;
@@ -1988,6 +2096,16 @@
 
             .event-chip {
                 padding: 7px 8px 8px;
+            }
+
+            .event-chip--bar,
+            .event-chip--dot {
+                min-height: 20px;
+                padding: 0;
+            }
+
+            .event-chip--bar {
+                padding: 3px 6px;
             }
 
             .event-chip-title {
@@ -2255,6 +2373,16 @@
             padding: 7px 8px 8px;
         }
 
+        body.embed-mode .event-chip--bar,
+        body.embed-mode .event-chip--dot {
+            min-height: 22px;
+            padding: 0;
+        }
+
+        body.embed-mode .event-chip--bar {
+            padding: 3px 7px;
+        }
+
         body.embed-mode .event-chip--paid,
         body.embed-mode .event-chip--free {
             padding-right: 8px;
@@ -2273,6 +2401,19 @@
         body.embed-mode .event-chip--paid::after,
         body.embed-mode .event-chip--free::after {
             content: none;
+        }
+
+        body.embed-mode .event-chip--bar.event-chip--paid,
+        body.embed-mode .event-chip--bar.event-chip--free,
+        body.embed-mode .event-chip--dot.event-chip--paid,
+        body.embed-mode .event-chip--dot.event-chip--free {
+            padding-top: 0;
+            padding-right: 0;
+        }
+
+        body.embed-mode .event-chip--bar.event-chip--paid,
+        body.embed-mode .event-chip--bar.event-chip--free {
+            padding: 3px 7px;
         }
 
         body.embed-mode .event-chip-title,

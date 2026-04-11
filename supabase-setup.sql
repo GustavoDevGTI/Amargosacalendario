@@ -8,6 +8,7 @@ create table if not exists public.calendar_events (
     description varchar(200) not null default '',
     categories text[] not null default '{}'::text[],
     access_type text not null default 'free',
+    display_style text not null default 'dot',
     image_url text null,
     created_at timestamptz not null default timezone('utc', now()),
     updated_at timestamptz not null default timezone('utc', now())
@@ -16,13 +17,20 @@ create table if not exists public.calendar_events (
 alter table public.calendar_events
     alter column description type varchar(200),
     add column if not exists image_url text null,
-    add column if not exists access_type text not null default 'free';
+    add column if not exists access_type text not null default 'free',
+    add column if not exists display_style text not null default 'dot';
 
 alter table public.calendar_events
     drop constraint if exists calendar_events_access_type_check;
 
 alter table public.calendar_events
     add constraint calendar_events_access_type_check check (access_type in ('free', 'paid'));
+
+alter table public.calendar_events
+    drop constraint if exists calendar_events_display_style_check;
+
+alter table public.calendar_events
+    add constraint calendar_events_display_style_check check (display_style in ('dot', 'bar'));
 
 create or replace function public.set_calendar_events_updated_at()
 returns trigger
