@@ -1764,6 +1764,7 @@
     function openModal(modal, focusTarget) {
         modal.classList.add("open");
         modal.setAttribute("aria-hidden", "false");
+        updateModalOpenState();
         if (focusTarget) {
             window.setTimeout(() => focusTarget.focus(), 40);
         }
@@ -1775,6 +1776,7 @@
         }
         modal.classList.remove("open");
         modal.setAttribute("aria-hidden", "true");
+        updateModalOpenState();
         if (modal === refs.loginModal) {
             refs.loginForm.reset();
             refs.loginError.textContent = "";
@@ -1791,6 +1793,12 @@
         }
     }
 
+    function updateModalOpenState() {
+        const hasOpenModal = [refs.loginModal, refs.eventModal, refs.dayDetailsModal, refs.imageViewerModal]
+            .some((modal) => modal && modal.classList.contains("open"));
+        document.body.classList.toggle("modal-open", hasOpenModal);
+    }
+
     function setupModalScrollChaining() {
         if (!state.isEmbedMode || window.parent === window) {
             return;
@@ -1803,8 +1811,10 @@
             }
 
             let previousTouchY = 0;
+            let isTouchScrollChained = false;
             modalBody.addEventListener("touchstart", (event) => {
                 previousTouchY = event.touches && event.touches[0] ? event.touches[0].clientY : 0;
+                isTouchScrollChained = false;
             }, { passive: true });
 
             modalBody.addEventListener("touchmove", (event) => {
@@ -1815,8 +1825,16 @@
                 const currentTouchY = event.touches[0].clientY;
                 const deltaY = previousTouchY - currentTouchY;
                 previousTouchY = currentTouchY;
-                relayScrollToParentAtBoundary(modalBody, deltaY, event);
+                isTouchScrollChained = relayScrollToParentAtBoundary(modalBody, deltaY, event, isTouchScrollChained);
             }, { passive: false });
+
+            modalBody.addEventListener("touchend", () => {
+                isTouchScrollChained = false;
+            }, { passive: true });
+
+            modalBody.addEventListener("touchcancel", () => {
+                isTouchScrollChained = false;
+            }, { passive: true });
 
             modalBody.addEventListener("wheel", (event) => {
                 if (modal.classList.contains("open")) {
@@ -1826,20 +1844,24 @@
         });
     }
 
-    function relayScrollToParentAtBoundary(scrollElement, deltaY, event) {
+    function relayScrollToParentAtBoundary(scrollElement, deltaY, event, forceRelay = false) {
         if (!deltaY) {
-            return;
+            return forceRelay;
         }
 
         const atTop = scrollElement.scrollTop <= 0;
         const atBottom = Math.ceil(scrollElement.scrollTop + scrollElement.clientHeight) >= scrollElement.scrollHeight;
-        if ((deltaY < 0 && atTop) || (deltaY > 0 && atBottom)) {
+        const shouldRelay = forceRelay || (deltaY < 0 && atTop) || (deltaY > 0 && atBottom);
+        if (shouldRelay) {
             event.preventDefault();
             window.parent.postMessage({
                 type: "amargosa-calendar-scroll",
                 deltaY
             }, window.location.origin);
+            return true;
         }
+
+        return false;
     }
 
     function setLoginBusy(isBusy) {

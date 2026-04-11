@@ -2287,6 +2287,15 @@
             padding: 0;
         }
 
+        body.embed-mode.modal-open {
+            overflow: hidden;
+        }
+
+        body.embed-mode.modal-open .page-shell {
+            height: 100vh;
+            overflow: hidden;
+        }
+
         body.embed-mode .calendar-section {
             min-height: auto;
             overflow: visible;
