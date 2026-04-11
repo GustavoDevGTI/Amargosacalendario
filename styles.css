@@ -2092,13 +2092,8 @@
             .calendar-grid {
                 gap: 6px;
                 padding: 0 10px 14px;
-                overflow-x: auto;
-                grid-template-columns: repeat(7, minmax(82px, 1fr));
-                scrollbar-width: thin;
-            }
-
-            .calendar-grid > * {
-                min-width: 82px;
+                overflow-x: hidden;
+                grid-template-columns: repeat(7, minmax(0, 1fr));
             }
 
             .event-chip {
@@ -2129,11 +2124,7 @@
             }
 
             .event-more {
-                width: 30px;
-                min-width: 30px;
-                height: 30px;
-                min-height: 30px;
-                font-size: 0.7rem;
+                display: none;
             }
 
             .modal-head,
@@ -2551,13 +2542,8 @@
             body.embed-mode .calendar-grid {
                 gap: 6px;
                 padding: 0 10px 14px;
-                overflow-x: auto;
-                grid-template-columns: repeat(7, minmax(84px, 1fr));
-                scrollbar-width: thin;
-            }
-
-            body.embed-mode .calendar-grid > * {
-                min-width: 84px;
+                overflow-x: hidden;
+                grid-template-columns: repeat(7, minmax(0, 1fr));
             }
 
             body.embed-mode .day-cell {
@@ -2584,8 +2570,13 @@
             }
 
             body.embed-mode .event-chip-title {
-                font-size: 0.68rem;
+                font-size: 0.62rem;
                 line-height: 1.2;
+            }
+
+            body.embed-mode .day-tag,
+            body.embed-mode .event-more {
+                display: none;
             }
         }
 
