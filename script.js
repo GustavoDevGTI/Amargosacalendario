@@ -128,6 +128,7 @@
         refreshTimerId: 0
     };
     let calendarLayoutObserver = null;
+    let parentFrameHeightSyncId = 0;
 
     init();
 
@@ -160,6 +161,7 @@
             state.isLoadingEvents = false;
         }
         render();
+        window.addEventListener("load", queueParentFrameHeightSync);
     }
 
     function setupCalendarLayoutObserver() {
@@ -288,6 +290,7 @@
         renderCalendar();
         renderAdminTools();
         renderDayDetailsModal(state.selectedDate);
+        queueParentFrameHeightSync();
     }
 
     function renderThemeState() {
@@ -1340,10 +1343,40 @@
                 updateCalendarLayoutMode();
             }
             render();
+            queueParentFrameHeightSync();
         }, 120);
     }
 
     handleViewportResize.timerId = 0;
+
+    function queueParentFrameHeightSync() {
+        if (!state.isEmbedMode || window.parent === window || parentFrameHeightSyncId) {
+            return;
+        }
+
+        parentFrameHeightSyncId = window.requestAnimationFrame(() => {
+            parentFrameHeightSyncId = 0;
+            syncParentFrameHeight();
+            window.setTimeout(syncParentFrameHeight, 180);
+        });
+    }
+
+    function syncParentFrameHeight() {
+        if (!state.isEmbedMode || window.parent === window) {
+            return;
+        }
+
+        const height = Math.ceil(Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            refs.calendarGrid ? refs.calendarGrid.getBoundingClientRect().bottom : 0
+        ));
+
+        window.parent.postMessage({
+            type: "amargosa-calendar-height",
+            height
+        }, window.location.origin);
+    }
 
     function getFilteredEventsForDate(dateKey) {
         return getEventsForDate(dateKey).filter((eventItem) => {
@@ -1765,6 +1798,7 @@
         modal.classList.add("open");
         modal.setAttribute("aria-hidden", "false");
         updateModalOpenState();
+        queueParentFrameHeightSync();
         if (focusTarget) {
             window.setTimeout(() => focusTarget.focus(), 40);
         }
@@ -1777,6 +1811,7 @@
         modal.classList.remove("open");
         modal.setAttribute("aria-hidden", "true");
         updateModalOpenState();
+        queueParentFrameHeightSync();
         if (modal === refs.loginModal) {
             refs.loginForm.reset();
             refs.loginError.textContent = "";
