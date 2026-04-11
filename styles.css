@@ -2594,13 +2594,13 @@
 
             body.embed-mode .calendar-grid {
                 gap: 6px;
-                padding: 0 10px 14px;
+                padding: 0 10px 8px;
                 overflow-x: hidden;
                 grid-template-columns: repeat(7, minmax(0, 1fr));
             }
 
             body.embed-mode .day-cell {
-                min-height: 64px;
+                min-height: 82px;
                 gap: 5px;
                 padding: 7px;
             }
