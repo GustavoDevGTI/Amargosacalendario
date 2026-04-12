@@ -465,11 +465,12 @@
             filter: grayscale(0.72);
         }
 
-        body.theme-dark .day-cell.today {
+        body.theme-dark .day-cell.today,
+        body.theme-dark .day-cell.today.has-events {
             background:
-                linear-gradient(180deg, rgba(30, 34, 23, 0.98), rgba(55, 43, 18, 0.24)),
-                linear-gradient(135deg, rgba(21, 124, 98, 0.08), rgba(20, 28, 25, 0.92));
-            border-color: rgba(212, 175, 55, 0.32);
+                linear-gradient(180deg, rgba(68, 55, 20, 0.72), rgba(42, 34, 15, 0.48)),
+                linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(20, 28, 25, 0.92));
+            border-color: rgba(212, 175, 55, 0.48);
         }
 
         body.theme-dark h1,
@@ -819,7 +820,10 @@
         }
 
         .day-cell.today {
-            background: rgba(212, 175, 55, 0.08);
+            background:
+                linear-gradient(180deg, rgba(255, 245, 190, 0.96), rgba(255, 250, 220, 0.98)),
+                rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.45);
         }
 
         .day-cell.past {
@@ -832,6 +836,13 @@
 
         .day-cell.has-events {
             background: rgba(255, 255, 255, 0.98);
+        }
+
+        .day-cell.today.has-events {
+            background:
+                linear-gradient(180deg, rgba(255, 245, 190, 0.96), rgba(255, 250, 220, 0.98)),
+                rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.45);
         }
 
         .day-cell.past.has-events,
@@ -880,7 +891,7 @@
 
         .day-cell.today .day-number {
             background: transparent;
-            color: #775d0d;
+            color: #80610a;
         }
 
         .day-tag {
@@ -995,12 +1006,12 @@
         .day-cell--dense .event-chip--paid::before,
         .day-cell--dense .event-chip--free::before {
             top: 50%;
-            right: 3px;
-            width: 18px;
-            height: 18px;
+            right: 5px;
+            width: auto;
+            height: auto;
             padding: 0;
             transform: translateY(-50%);
-            font-size: 0.62rem;
+            font-size: 0.72rem;
         }
 
         .day-cell--dense .event-chip--paid::after,
@@ -1105,21 +1116,21 @@
 
         .event-chip--paid::before,
         .event-chip--free::before {
-            content: "🆓";
+            content: "💸";
             position: absolute;
-            top: 3px;
+            top: 4px;
             right: 5px;
             z-index: 1;
             display: inline-grid;
             place-items: center;
-            width: 22px;
-            height: 22px;
+            width: auto;
+            height: auto;
             padding: 0;
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid rgba(var(--access-flag-rgb), 0.34);
-            border-radius: 999px;
-            box-shadow: 0 6px 12px rgba(var(--access-flag-rgb), 0.18);
-            font-size: 0.7rem;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+            font-size: 0.78rem;
             line-height: 1;
             pointer-events: none;
         }
@@ -1200,11 +1211,11 @@
         .event-chip--dot.event-chip--paid::before,
         .event-chip--dot.event-chip--free::before {
             top: 50%;
-            right: 3px;
-            width: 18px;
-            height: 18px;
+            right: 5px;
+            width: auto;
+            height: auto;
             transform: translateY(-50%);
-            font-size: 0.62rem;
+            font-size: 0.72rem;
         }
 
         .event-chip-dot {
@@ -1744,20 +1755,20 @@
 
         .day-preview-item--paid::before,
         .day-preview-item--free::before {
-            content: "🆓";
+            content: "💸";
             position: absolute;
             top: 10px;
             right: 10px;
             z-index: 1;
             display: inline-grid;
             place-items: center;
-            width: 24px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid rgba(var(--access-flag-rgb), 0.34);
-            border-radius: 999px;
-            box-shadow: 0 7px 14px rgba(var(--access-flag-rgb), 0.18);
-            font-size: 0.72rem;
+            width: auto;
+            height: auto;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+            font-size: 0.9rem;
             line-height: 1;
             pointer-events: none;
         }
@@ -2541,12 +2552,12 @@
         body.embed-mode .event-chip--paid::before,
         body.embed-mode .event-chip--free::before {
             top: 50%;
-            right: 3px;
-            width: 18px;
-            height: 18px;
+            right: 5px;
+            width: auto;
+            height: auto;
             padding: 0;
             transform: translateY(-50%);
-            font-size: 0.62rem;
+            font-size: 0.72rem;
         }
 
         body.embed-mode .event-chip--paid::after,
